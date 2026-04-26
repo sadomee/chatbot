@@ -48,7 +48,7 @@ for message in st.session_state.messages:
     cls = "user-bubble" if message["role"] == "user" else "bot-bubble"
     st.markdown(f'<div class="{cls}">{message["content"]}</div>', unsafe_allow_html=True)
 
-# 6. صندوق الإدخال
+# 6. صندوق الإدخال مع منطق التخصيص
 if prompt := st.chat_input("كيف يمكنني مساعدتك؟"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.markdown(f'<div class="user-bubble">{prompt}</div>', unsafe_allow_html=True)
@@ -57,7 +57,16 @@ if prompt := st.chat_input("كيف يمكنني مساعدتك؟"):
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "أنت مساعد طبي خبير لمرضى السكري في رمضان."},
+                {
+                    "role": "system", 
+                    "content": (
+                        "أنت مساعد طبي متخصص حصرياً في مرض السكري خلال شهر رمضان فقط. "
+                        "قواعدك الصارمة: "
+                        "1. أجب فقط على الأسئلة المتعلقة بالسكري، التغذية لمريض السكري، والأدوية في رمضان. "
+                        "2. إذا سألك المستخدم عن أي موضوع آخر (مثل الطبخ العام، الرياضة غير المرتبطة بالسكري، السياسة، العلوم، إلخ)، "
+                        "يجب أن تعتذر بلباقة وتقول: 'عذراً، أنا مخصص فقط لتقديم النصائح المتعلقة بالسكري في رمضان.'"
+                    )
+                },
                 *[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
             ]
         )
@@ -66,7 +75,4 @@ if prompt := st.chat_input("كيف يمكنني مساعدتك؟"):
         st.markdown(f'<div class="bot-bubble">{answer}</div>', unsafe_allow_html=True)
         st.rerun()
     except Exception as e:
-        if "401" in str(e):
-            st.error("المفتاح الذي استخدمتيه غير صحيح أو انتهى. الرجاء التأكد من الـ Secrets.")
-        else:
-            st.error(f"حدث خطأ: {str(e)}")
+        st.error(f"حدث خطأ: {str(e)}")
