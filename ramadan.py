@@ -1,61 +1,52 @@
 import streamlit as st
 from openai import OpenAI
 
-# 1. إعدادات الصفحة
+# 1. إعداد الصفحة
 st.set_page_config(page_title="مساعد السكري الرمضاني", page_icon="🌙")
 
-# 2. كود التنسيق (CSS) - وضعته بطريقة تمنع حدوث أخطاء
+# 2. التنسيق الجمالي (بدون تخريب الأيقونات)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
     
-    /* 1. تصميم الخلفية العامة */
-    .stApp {
-        background: linear-gradient(180deg, #f0f7f4 0%, #ffffff 100%);
-        font-family: 'Cairo', sans-serif !important;
-    }
-
-    /* 2. تحسين شكل العنوان */
-    h1 {
-        color: #1b4332 !important;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        font-weight: 700 !important;
-    }
-
-    /* 3. تجميل فقاعات المحادثة */
-    [data-testid="stChatMessage"] {
-        background-color: white !important;
-        border-radius: 15px !important;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
-        margin-bottom: 15px !important;
-        padding: 10px !important;
-    }
-
-    /* 4. تعديل صندوق الإدخال */
-    .stChatInputContainer {
-        padding-bottom: 20px !important;
-    }
-
-    /* 5. ضبط النصوص والاتجاهات */
     * {
         font-family: 'Cairo', sans-serif !important;
         direction: rtl;
     }
+    
+    .stApp {
+        background-color: #f9f9f9;
+    }
+
+    /* جعل العنوان في المنتصف وبألوان جميلة */
+    .main-title {
+        text-align: center;
+        color: #2E7D32;
+        font-size: 2.5rem;
+        margin-bottom: 0px;
+    }
+    
+    .sub-title {
+        text-align: center;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    /* إصلاح اتجاه نصوص الرسائل */
+    [data-testid="stChatMessageContent"] {
+        text-align: right !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# إضافة "بطاقة ترحيب" أنيقة في البداية
-st.info("💡 **مرحباً بكِ في مساعدكِ الرمضاني.** اسأليني عن تنظيم السكر، الوجبات الصحية، أو متى يجب عليكِ الإفطار.")
-
-# 3. الاتصال بـ OpenAI
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-
-# 4. العنوان والواجهة
-st.title("🌙 مساعد السكري في رمضان")
-st.write("رفيقك الصحي لصيام آمن")
+# 3. واجهة المستخدم
+st.markdown('<h1 class="main-title">🌙 مساعد السكري في رمضان</h1>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">رفيقك الصحي لصيام آمن ومطمئن</p>', unsafe_allow_html=True)
 st.divider()
 
-# 5. نظام الرسائل (Chat Logic)
+# 4. الاتصال بـ OpenAI
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -71,7 +62,7 @@ if prompt := st.chat_input("كيف يمكنني مساعدتك؟"):
     with st.chat_message("assistant"):
         try:
             messages_to_send = [
-                {"role": "system", "content": "أنت مساعد طبي لمرضى السكري في رمضان فقط. أجب باختصار وباللغة العربية."}
+                {"role": "system", "content": "أنت مساعد طبي متخصص لمرضى السكري في رمضان فقط. أجب بوضوح واختصار باللغة العربية."}
             ]
             for m in st.session_state.messages:
                 messages_to_send.append({"role": m["role"], "content": m["content"]})
@@ -84,4 +75,4 @@ if prompt := st.chat_input("كيف يمكنني مساعدتك؟"):
             st.markdown(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
         except Exception as e:
-            st.error("عذراً، حدث خطأ تقني.")
+            st.error("حدث خطأ في الاتصال، تأكدي من الرصيد أو الإعدادات.")
