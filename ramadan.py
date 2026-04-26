@@ -1,12 +1,44 @@
 import streamlit as st
 from openai import OpenAI
 
-st.set_page_config(page_title="Ramadan Diabetes AI", page_icon="🌙")
+# إعداد الصفحة مع أيقونة وعنوان
+st.set_page_config(page_title="مساعد السكري الرمضاني", page_icon="🌙")
+# كود تغيير الخط بشكل أقوى
+st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
-# جلب المفتاح من Secrets
+    /* هذا الجزء يستهدف كل عناصر الموقع ويجبرها على تغيير الخط */
+    * {
+        font-family: 'Cairo', sans-serif !important;
+    }
+    
+    body, p, div, span, h1, h2, h3, h4, h5, h6, input, button, textarea {
+        font-family: 'Cairo', sans-serif !important;
+        text-align: right !important;
+        direction: rtl !important;
+    }
+
+    /* تعديل خاص بمنطقة إدخال النص الأسفل */
+    .stChatInputContainer textarea {
+        font-family: 'Cairo', sans-serif !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-st.title("🌙 مساعد السكري في رمضان (AI)")
+# --- واجهة Sidebar الجانبية ---
+with st.sidebar:
+    st.markdown("### عن المساعد 🌙")
+    st.info("نحن هنا لنساعدك في تنظيم سكرك خلال الشهر الفضيل بصورة آمنة.")
+    st.write("---")
+    st.write("💡 **نصيحة اليوم:** احرص على قياس السكر قبل الفطور بساعتين.")
+
+# --- تحسين شكل العنوان ---
+st.markdown("<h1 style='text-align: center; color: #2E7D32;'>🌙 مساعد السكري في رمضان</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>رفيقك الذكي لصيام صحي ومطمئن</p>", unsafe_allow_html=True)
+st.divider()
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -22,21 +54,9 @@ if prompt := st.chat_input("كيف يمكنني مساعدتك؟"):
         
     with st.chat_message("assistant"):
         try:
-            # هنا التعديل السحري: ندمج التعليمات الصارمة مع تاريخ المحادثة
             messages_to_send = [
-                {
-                    "role": "system", 
-                    "content": (
-                        "أنت مساعد طبي متخصص وحصري لمرضى السكري في شهر رمضان فقط. "
-                        "مهامك: تقديم نصائح غذائية، توقيت الأدوية، وتحذيرات هبوط السكر في رمضان. "
-                        "قاعدة صارمة: لا تجب على أي سؤال خارج موضوع السكري ورمضان. "
-                        "إذا سألك المستخدم عن أي شيء آخر (مثل الطبخ العام، الدراسة، الرياضة، البرمجة، أو أسئلة عامة)، "
-                        "اعتذر بلطف وقل: 'عذراً، أنا مبرمج لتقديم المساعدة الطبية لمرضى السكري في رمضان فقط لأضمن لك أدق المعلومات.'"
-                    )
-                }
+                {"role": "system", "content": "أنت مساعد طبي متخصص لمرضى السكري في رمضان. لا تجب على مواضيع خارج هذا النطاق."}
             ]
-            
-            # إضافة الأسئلة السابقة ليتذكر المساعد سياق الكلام
             for m in st.session_state.messages:
                 messages_to_send.append({"role": m["role"], "content": m["content"]})
 
@@ -44,11 +64,8 @@ if prompt := st.chat_input("كيف يمكنني مساعدتك؟"):
                 model="gpt-3.5-turbo",
                 messages=messages_to_send
             )
-            
             answer = response.choices[0].message.content
             st.markdown(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
-            
         except Exception as e:
-            st.error("حدث خطأ في الاتصال بـ OpenAI")
-            st.info(f"نص الخطأ التقني: {e}")
+            st.error("حدث خطأ تقني")
