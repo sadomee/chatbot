@@ -2,7 +2,7 @@ import streamlit as st
 from openai import OpenAI
 
 # 1. إعدادات الصفحة الأساسية
-st.set_page_config(page_title="رمضان بصحة", page_icon="🌙", layout="wide")
+st.set_page_config(page_title="ريبوت دردشة لدعم مرضى السكري خلال رمضان", page_icon="🌙", layout="wide")
 
 # 2. كود الـ CSS الكامل (بدون أي اختصار لكل تفاصيل الواجهة)
 st.markdown("""
@@ -218,6 +218,13 @@ st.markdown("""
         border: none !important; 
         font-size: 1.1rem !important;
     }
+
+    /* تنسيق خاص لزر الطوارئ الأحمر */
+    div.stButton > button[key="emergency_btn"] {
+        background-color: #d00000 !important;
+        color: white !important;
+        font-weight: bold !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -230,6 +237,23 @@ if "messages" not in st.session_state:
 # --- 1. الصفحة الرئيسية (النسخة الطويلة والكاملة) ---
 if st.session_state.page == 'home':
     st.markdown('<div id="top"></div>', unsafe_allow_html=True)
+
+    # طلب الدكتور 1: العنوان المطلوب
+    # طلب الدكتور 3: زر الطوارئ (تم وضعه في الأعلى ليسهل الوصول إليه)
+    col_title, col_emergency = st.columns([4, 2])
+    with col_title:
+        st.markdown('<h2 style="color:#1b4332; text-align:right;">ريبوت دردشة لدعم مرضى السكري خلال رمضان</h2>', unsafe_allow_html=True)
+    with col_emergency:
+        if st.button("🚨 حالات الطوارئ / انخفاض أو ارتفاع السكر", key="emergency_btn"):
+            st.error("""
+            **إجراءات الطوارئ السريعة:**
+            * افحص سكر الدم فوراً.
+            * اقطع الصيام فوراً إذا كان السكر أقل من 70 أو أكثر من 300 مجم/ديسيلتر.
+            * اطلب الرعاية الطبية العاجلة فوراً إذا لم تستقر الحالة أو ساءت الأعراض.
+            """)
+
+    # طلب الدكتور 2: إخلاء المسؤولية قبل بدء الدردشة
+    st.warning("⚠️ **إخلاء مسؤولية:** هذا التطبيق للأغراض التعليمية فقط وليس نصيحة طبية بديلة؛ يرجى طلب المساعدة الطبية فوراً في حال ظهور أعراض حادة أو تقلبات خطيرة في السكر.")
 
     # قسم الترحيب (Hero)
     st.markdown('<div class="hero-flex">', unsafe_allow_html=True)
@@ -330,7 +354,8 @@ elif st.session_state.page == 'chat':
             st.session_state.page = 'home'
             st.rerun()
     with ch2:
-        st.markdown('<h2 style="color:#1b4332; margin:0;">مساعد السكري الذكي 🌙</h2>', unsafe_allow_html=True)
+        # طلب الدكتور 1: العنوان المطلوب
+        st.markdown('<h2 style="color:#1b4332; margin:0; text-align:right;">ريبوت دردشة لدعم مرضى السكري خلال رمضان</h2>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
     # عرض الرسائل المخزنة في الجلسة
