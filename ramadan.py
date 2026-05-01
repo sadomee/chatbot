@@ -2,7 +2,7 @@ import streamlit as st
 from openai import OpenAI
 
 # 1. إعدادات الصفحة الأساسية
-st.set_page_config(page_title="ريبوت دردشة لدعم مرضى السكري خلال رمضان", page_icon="🌙", layout="wide")
+st.set_page_config(page_title="Diabetes Support Chatbot During Ramadan", page_icon="🌙", layout="wide")
 
 # 2. كود الـ CSS الكامل (بدون أي اختصار لكل تفاصيل الواجهة)
 st.markdown("""
@@ -209,7 +209,7 @@ st.markdown("""
         border: 1px solid #e5e7eb !important;
     }
 
-    /* الأزرار الخضراء */
+    /* الأزرار الخضراء الافتراضية */
     div.stButton > button {
         background-color: #1b4332 !important; 
         color: white !important;
@@ -219,11 +219,12 @@ st.markdown("""
         font-size: 1.1rem !important;
     }
 
-    /* تنسيق خاص لزر الطوارئ الأحمر */
+    /* التعديل المطلوب: تنسيق خاص لزر الطوارئ باللون الأحمر */
     div.stButton > button[key="emergency_btn"] {
-        background-color: #d00000 !important;
+        background-color: #FF0000 !important; /* اللون الأحمر الصارخ */
         color: white !important;
         font-weight: bold !important;
+        border: 2px solid white !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -242,7 +243,7 @@ if st.session_state.page == 'home':
     # طلب الدكتور 3: زر الطوارئ (تم وضعه في الأعلى ليسهل الوصول إليه)
     col_title, col_emergency = st.columns([4, 2])
     with col_title:
-        st.markdown('<h2 style="color:#1b4332; text-align:right;">ريبوت دردشة لدعم مرضى السكري خلال رمضان</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="color:#1b4332; text-align:right;">Diabetes Support Chatbot During Ramadan</h2>', unsafe_allow_html=True)
     with col_emergency:
         if st.button("🚨 حالات الطوارئ / انخفاض أو ارتفاع السكر", key="emergency_btn"):
             st.error("""
@@ -355,7 +356,7 @@ elif st.session_state.page == 'chat':
             st.rerun()
     with ch2:
         # طلب الدكتور 1: العنوان المطلوب
-        st.markdown('<h2 style="color:#1b4332; margin:0; text-align:right;">ريبوت دردشة لدعم مرضى السكري خلال رمضان</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="color:#1b4332; margin:0; text-align:right;">Diabetes Support Chatbot During Ramadan</h2>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
     # عرض الرسائل المخزنة في الجلسة
@@ -398,4 +399,4 @@ elif st.session_state.page == 'chat':
         except Exception as e:
             # إظهار رسالة خطأ واضحة في حال فشل الـ API
             st.error(f"حدث خطأ في الاتصال: {str(e)}")
-            st.info("تأكدي من صحة مفتاح الـ API ومن وجود رصيد كافٍ في حساب OpenAI.")
+            st.info("تأكدي من صحة مفتاح الـ API ومن وجود رصيد كافٍ في حساب OpenAI."
