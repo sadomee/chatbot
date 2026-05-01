@@ -2,9 +2,9 @@ import streamlit as st
 from openai import OpenAI
 
 # 1. إعدادات الصفحة الأساسية
-st.set_page_config(page_title="Diabetes Support Chatbot During Ramadan", page_icon="🌙", layout="wide")
+st.set_page_config(page_title="ريبوت دردشة لدعم مرضى السكري خلال رمضان", page_icon="🌙", layout="wide")
 
-# 2. كود الـ CSS الكامل (بدون أي اختصار لكل تفاصيل الواجهة)
+# 2. كود الـ CSS الكامل (تم استعادة كل تفاصيل الواجهة الأصلية)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
@@ -170,7 +170,6 @@ st.markdown("""
         margin-bottom: 20px;
     }
     
-    /* إخفاء الأفاتار الافتراضي */
     [data-testid="stChatMessageAvatarUser"], [data-testid="stChatMessageAvatarAssistant"] { 
         display: none !important; 
     }
@@ -180,7 +179,6 @@ st.markdown("""
         width: 100% !important; 
     }
 
-    /* فقاعة المستخدم */
     div[aria-label="Chat message from user"] { 
         flex-direction: row-reverse !important; 
     }
@@ -194,7 +192,6 @@ st.markdown("""
         margin-right: 15px;
     }
 
-    /* فقاعة المساعد */
     div[aria-label="Chat message from assistant"] { 
         flex-direction: row !important; 
     }
@@ -209,8 +206,8 @@ st.markdown("""
         border: 1px solid #e5e7eb !important;
     }
 
-    /* الأزرار الخضراء الافتراضية */
-    div.stButton > button {
+    /* --- تلوين الأزرار حسب النوع (الحل النهائي) --- */
+    div.stButton > button[kind="primary"] {
         background-color: #1b4332 !important; 
         color: white !important;
         border-radius: 50px !important; 
@@ -219,12 +216,14 @@ st.markdown("""
         font-size: 1.1rem !important;
     }
 
-    /* التعديل المطلوب: تنسيق خاص لزر الطوارئ باللون الأحمر */
-    div.stButton > button[key="emergency_btn"] {
-        background-color: #FF0000 !important; /* اللون الأحمر الصارخ */
+    div.stButton > button[kind="secondary"] {
+        background-color: #d00000 !important;
         color: white !important;
+        border-radius: 50px !important; 
+        padding: 12px 35px !important; 
+        border: none !important; 
         font-weight: bold !important;
-        border: 2px solid white !important;
+        font-size: 1.1rem !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -235,17 +234,16 @@ if 'page' not in st.session_state:
 if "messages" not in st.session_state: 
     st.session_state.messages = []
 
-# --- 1. الصفحة الرئيسية (النسخة الطويلة والكاملة) ---
+# --- 1. الصفحة الرئيسية (النسخة الكاملة) ---
 if st.session_state.page == 'home':
     st.markdown('<div id="top"></div>', unsafe_allow_html=True)
 
-    # طلب الدكتور 1: العنوان المطلوب
-    # طلب الدكتور 3: زر الطوارئ (تم وضعه في الأعلى ليسهل الوصول إليه)
     col_title, col_emergency = st.columns([4, 2])
     with col_title:
-        st.markdown('<h2 style="color:#1b4332; text-align:right;">Diabetes Support Chatbot During Ramadan</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="color:#1b4332; text-align:right;"> ريبوت دردشة لدعم مرضى السكري خلال رمضان</h2>', unsafe_allow_html=True)
     with col_emergency:
-        if st.button("🚨 حالات الطوارئ / انخفاض أو ارتفاع السكر", key="emergency_btn"):
+        # استخدام kind="secondary" برمجياً لتمييزه وتلوينه بالأحمر
+        if st.button("🚨 حالات الطوارئ / انخفاض أو ارتفاع السكر", type="secondary", key="emergency_btn"):
             st.error("""
             **إجراءات الطوارئ السريعة:**
             * افحص سكر الدم فوراً.
@@ -253,7 +251,6 @@ if st.session_state.page == 'home':
             * اطلب الرعاية الطبية العاجلة فوراً إذا لم تستقر الحالة أو ساءت الأعراض.
             """)
 
-    # طلب الدكتور 2: إخلاء المسؤولية قبل بدء الدردشة
     st.warning("⚠️ **إخلاء مسؤولية:** هذا التطبيق للأغراض التعليمية فقط وليس نصيحة طبية بديلة؛ يرجى طلب المساعدة الطبية فوراً في حال ظهور أعراض حادة أو تقلبات خطيرة في السكر.")
 
     # قسم الترحيب (Hero)
@@ -268,7 +265,7 @@ if st.session_state.page == 'home':
         """, unsafe_allow_html=True)
     with col_t2:
         st.write("<br>", unsafe_allow_html=True)
-        if st.button("ابدأ المحادثة الآن 💬", key="hero_start_btn"):
+        if st.button("ابدأ المحادثة الآن 💬", type="primary", key="hero_start_btn"):
             st.session_state.page = 'chat'
             st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
@@ -316,10 +313,9 @@ if st.session_state.page == 'home':
         </div>
     """, unsafe_allow_html=True)
     
-    # الزر السفلي الإضافي
     col_btn_center = st.columns([1, 1, 1])
     with col_btn_center[1]:
-        if st.button("ابدأ المحادثة الآن 💬", key="bottom_start_btn"):
+        if st.button("ابدأ المحادثة الآن 💬", type="primary", key="bottom_start_btn"):
             st.session_state.page = 'chat'
             st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
@@ -345,58 +341,45 @@ if st.session_state.page == 'home':
         </div>
     """, unsafe_allow_html=True)
 
-# --- 2. صفحة الشات (النسخة الكاملة مع القواعد والـ API) ---
+# --- 2. صفحة الشات (النسخة الكاملة) ---
 elif st.session_state.page == 'chat':
-    # الهيدر الثابت للشات
     st.markdown('<div class="sticky-header">', unsafe_allow_html=True)
     ch1, ch2 = st.columns([1, 5])
     with ch1:
-        if st.button("⬅️ عودة"):
+        if st.button("⬅️ عودة", type="primary"):
             st.session_state.page = 'home'
             st.rerun()
     with ch2:
-        # طلب الدكتور 1: العنوان المطلوب
-        st.markdown('<h2 style="color:#1b4332; margin:0; text-align:right;">Diabetes Support Chatbot During Ramadan</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="color:#1b4332; margin:0; text-align:right;"> ريبوت دردشة لدعم مرضى السكري خلال رمضان </h2>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # عرض الرسائل المخزنة في الجلسة
     for m in st.session_state.messages:
         with st.chat_message(m["role"]):
             st.markdown(m["content"])
 
-    # منطقة الإدخال ومعالجة الرد
     if prompt := st.chat_input("اسألي عن السكري في رمضان..."):
-        # إضافة رسالة المستخدم للواجهة والجلسة
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
 
         try:
-            # الاتصال بـ OpenAI باستخدام المفتاح المخزن في Secrets
             client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-            
-            # القواعد الصارمة للنظام (هنا يتم حل مشكلة الرد والترحيب)
             system_rules = """أنتِ مساعدة طبية ذكية متخصصة حصرياً في مرض السكري خلال شهر رمضان.
-            1. إذا قام المستخدم بالترحيب (مثل: السلام عليكم، هلا، مرحبا، أهلاً)، يجب أن ترحبي بهِ بحفاوة بعبارة 'مرحباً بكِ في مساعد السكري الرمضاني، كيف يمكنني مساعدتكِ اليوم؟'.
+            1. إذا قام المستخدم بالترحيب، يجب أن ترحبي بهِ بعبارة 'مرحباً بكِ في مساعد السكري الرمضاني، كيف يمكنني مساعدتكِ اليوم؟'.
             2. لا تجيبي على أي سؤال لا يتعلق بالسكري في رمضان بتاتاً.
             3. إذا سُئلتِ عن شيء خارج التخصص، قولي بلباقة: 'عذراً، أنا متخصصة فقط في تقديم الإرشادات الطبية المتعلقة بمرض السكري في رمضان لضمان سلامتكم'."""
             
-            # إرسال الطلب لـ API
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "system", "content": system_rules}] + st.session_state.messages
             )
             
-            # استلام وعرض الرد
             answer = response.choices[0].message.content
             with st.chat_message("assistant"):
                 st.markdown(answer)
             
-            # تخزين رد المساعد وإعادة التشغيل لتحديث الواجهة
             st.session_state.messages.append({"role": "assistant", "content": answer})
             st.rerun()
 
         except Exception as e:
-            # إظهار رسالة خطأ واضحة في حال فشل الـ API
             st.error(f"حدث خطأ في الاتصال: {str(e)}")
-            st.info("تأكدي من صحة مفتاح الـ API ومن وجود رصيد كافٍ في حساب OpenAI."
