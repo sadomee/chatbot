@@ -4,18 +4,17 @@ from openai import OpenAI
 # 1. إعدادات الصفحة الأساسية
 st.set_page_config(page_title="ريبوت دردشة لدعم مرضى السكري خلال رمضان", page_icon="🌙", layout="wide")
 
-# 2. كود الـ CSS الكامل (حل مشكلة اللون الأبيض، الإطار الأحمر، والفوتر)
+# 2. كود الـ CSS الكامل (تم استعادة كل تفاصيل الواجهة الأصلية)
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
     
-    /* ضبط الخطوط والاتجاهات ومنع التحديد الأحمر */
-    * { 
-        font-family: 'Cairo', sans-serif !important; 
-        direction: rtl; 
-        text-align: right; 
-        outline: none !important; /* حل مشكلة الإطار الأحمر عند الضغط */
-    }
+    /* ضبط الخطوط والاتجاهات */
+  * { 
+    font-family: 'Cairo', sans-serif !important; 
+    direction: rtl; 
+    text-align: right; 
+}
     
     /* إخفاء عناصر ستريم ليت الافتراضية */
     header, footer, .stDeployButton { 
@@ -24,15 +23,6 @@ st.markdown("""
     
     .block-container { 
         padding-top: 2rem !important; 
-    }
-
-    /* حل نهائي لمشكلة المربعات البيضاء في الجوال واللابتوب */
-    [data-testid="stVerticalBlock"] > div > div > .stMarkdown {
-        background-color: transparent !important;
-    }
-    
-    .stAlert {
-        background-color: rgba(255, 255, 255, 0.1) !important;
     }
 
     /* --- قسم الترحيب (Hero Section) --- */
@@ -77,7 +67,7 @@ st.markdown("""
         font-size: 1.1rem; 
     }
 
-    /* --- الأيقونات الأربعة --- */
+    /* --- الأيقونات الأربعة (كيف أساعدك) --- */
     .card-container {
         background: white; 
         padding: 25px; 
@@ -145,7 +135,7 @@ st.markdown("""
     /* --- الفوتر الكامل --- */
     .custom-footer {
         background: #1b4332; 
-        color: white !important; 
+        color: white; 
         padding: 60px 40px; 
         border-radius: 40px 40px 0 0; 
         display: flex; 
@@ -158,8 +148,7 @@ st.markdown("""
         flex: 1; 
         min-width: 200px; 
     }
-    .footer-col h3, .footer-col h4, .footer-col p { 
-        color: white !important;
+    .footer-col h3, .footer-col h4 { 
         margin-bottom: 20px; 
     }
     .footer-links a { 
@@ -170,54 +159,87 @@ st.markdown("""
         font-size: 1rem; 
     }
 
-    /* --- واجهة الشات --- */
+    /* --- واجهة الشات المطورة لضبط الاتجاهات --- */
+    
+    /* إخفاء الأفاتار لزيادة المساحة */
     [data-testid="stChatMessageAvatarUser"], [data-testid="stChatMessageAvatarAssistant"] { 
         display: none !important; 
     }
     
+    /* جعل حاوية الرسالة تأخذ العرض الكامل */
     [data-testid="stChatMessage"] { 
         background-color: transparent !important; 
         width: 100% !important; 
     }
 
+    /* رسالة المستخدم: تظهر في جهة اليمين */
+    div[aria-label="Chat message from user"] { 
+        flex-direction: row-reverse !important; 
+        display: flex !important;
+    }
     div[aria-label="Chat message from user"] .stMarkdown {
         background-color: #1b4332 !important; 
         color: white !important;
         border-radius: 20px 20px 2px 20px !important; 
         padding: 12px 20px !important;
+        width: fit-content !important; 
+        max-width: 75% !important; 
         margin-right: 15px;
-        margin-left: auto;
+        margin-left: auto; /* يدفع الرسالة لليمين */
     }
 
+    /* رسالة البوت (المساعد): تظهر في جهة اليسار */
+    div[aria-label="Chat message from assistant"] { 
+        flex-direction: row !important; 
+        display: flex !important;
+    }
     div[aria-label="Chat message from assistant"] .stMarkdown {
         background-color: #f0f2f6 !important; 
         color: #1f2937 !important;
         border-radius: 20px 20px 20px 2px !important; 
         padding: 12px 20px !important;
+        width: fit-content !important; 
+        max-width: 75% !important; 
         margin-left: 15px;
-        margin-right: auto;
+        margin-right: auto; /* يدفع الرسالة لليسار */
         border: 1px solid #e5e7eb !important;
     }
-
-    /* تنسيق الأزرار ومنع أي حدود حمراء */
-    div.stButton > button {
-        border: none !important;
-        box-shadow: none !important;
-    }
+    /* --- تلوين الأزرار حسب النوع (الحل النهائي) --- */
     div.stButton > button[kind="primary"] {
         background-color: #1b4332 !important; 
         color: white !important;
         border-radius: 50px !important; 
         padding: 12px 35px !important; 
+        border: none !important; 
         font-size: 1.1rem !important;
     }
+
     div.stButton > button[kind="secondary"] {
         background-color: #d00000 !important;
         color: white !important;
         border-radius: 50px !important; 
         padding: 12px 35px !important; 
+        border: none !important; 
         font-weight: bold !important;
+        font-size: 1.1rem !important;
     }
+/* تنسيق النصوص داخل فقاعات الدردشة لتدعم اللغتين */
+div[aria-label="Chat message from user"] .stMarkdown,
+div[aria-label="Chat message from assistant"] .stMarkdown {
+    /* هذه الخاصية تجعل الاتجاه يعتمد على لغة النص المكتوب */
+    unicode-bidi: plaintext !important; 
+    text-align: start !important;
+    direction: ltr !important; 
+}
+
+/* التأكد من أن الفقاعة نفسها في مكانها الصحيح (يمنة للمستخدم ويسرة للبوت) */
+div[aria-label="Chat message from user"] {
+    justify-content: flex-end !important;
+}
+
+div[aria-label="Chat message from assistant"] {
+    justify-content: flex-start !important;
+}
     </style>
 """, unsafe_allow_html=True)
 
@@ -227,7 +249,7 @@ if 'page' not in st.session_state:
 if "messages" not in st.session_state: 
     st.session_state.messages = []
 
-# --- 1. الصفحة الرئيسية (النسخة الكاملة الأصلية) ---
+# --- 1. الصفحة الرئيسية (النسخة الكاملة) ---
 if st.session_state.page == 'home':
     st.markdown('<div id="top"></div>', unsafe_allow_html=True)
 
@@ -235,6 +257,7 @@ if st.session_state.page == 'home':
     with col_title:
         st.markdown('<h2 style="color:#1b4332; text-align:right;"> ريبوت دردشة لدعم مرضى السكري خلال رمضان</h2>', unsafe_allow_html=True)
     with col_emergency:
+        # استخدام kind="secondary" برمجياً لتمييزه وتلوينه بالأحمر
         if st.button("🚨 حالات الطوارئ / انخفاض أو ارتفاع السكر", type="secondary", key="emergency_btn"):
             st.error("""
             **إجراءات الطوارئ السريعة:**
@@ -245,44 +268,50 @@ if st.session_state.page == 'home':
 
     st.warning("⚠️ **إخلاء مسؤولية:** هذا التطبيق للأغراض التعليمية فقط وليس نصيحة طبية بديلة؛ يرجى طلب المساعدة الطبية فوراً في حال ظهور أعراض حادة أو تقلبات خطيرة في السكر.")
 
-    # قسم الترحيب (Hero Section)
-    st.markdown("""
-        <div class="hero-flex">
+    # قسم الترحيب (Hero)
+    st.markdown('<div class="hero-flex">', unsafe_allow_html=True)
+    col_t1, col_t2 = st.columns([3, 1])
+    with col_t1:
+        st.markdown("""
             <div class="hero-text-container">
                 <h1>مرحباً بكِ 🌙</h1>
                 <p>أنا مساعدكِ الطبي المتخصص في التوعية بمرض السكري خلال شهر رمضان المبارك.</p>
             </div>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    col_hero_btn = st.columns([1, 1, 1])
-    with col_hero_btn[0]:
+        """, unsafe_allow_html=True)
+    with col_t2:
+        st.write("<br>", unsafe_allow_html=True)
         if st.button("ابدأ المحادثة الآن 💬", type="primary", key="hero_start_btn"):
             st.session_state.page = 'chat'
             st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
     # قسم حول السكري
+    st.markdown('<div id="about" class="about-box">', unsafe_allow_html=True)
     st.markdown("""
-        <div id="about" class="about-box">
-            <h3>حول السكري في رمضان 🩸</h3>
-            <p>
-            إدارة السكري خلال الصيام تتطلب وعياً طبياً دقيقاً؛ حيث تختلف احتياجات الجسم للطاقة والعلاج بين ساعات الصيام والإفطار. 
-            يهدف هذا المساعد لتزويدك بإرشادات فورية حول كيفية التعامل مع تقلبات السكر، متى يجب كسر الصيام، وكيفية تنظيم وجباتك صحياً لضمان سلامتكِ.
-            </p>
-        </div>
+        <h3>حول السكري في رمضان 🩸</h3>
+        <p>
+        إدارة السكري خلال الصيام تتطلب وعياً طبياً دقيقاً؛ حيث تختلف احتياجات الجسم للطاقة والعلاج بين ساعات الصيام والإفطار. 
+        يهدف هذا المساعد لتزويدك بإرشادات فورية حول كيفية التعامل مع تقلبات السكر، متى يجب كسر الصيام، وكيفية تنظيم وجباتك صحياً لضمان سلامتكِ.
+        </p>
     """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    # قسم كيف أساعدكِ (الأيقونات الأربعة)
+    # قسم كيف أساعدك (الأيقونات الأربعة)
     st.markdown('<h2 style="color:#1b4332; text-align:center; margin-bottom:30px;">كيف أساعدكِ؟</h2>', unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
-    with c1: st.markdown('<div class="card-container"><span class="card-icon">🥗</span><div class="card-title">إرشادات غذائية</div></div>', unsafe_allow_html=True)
-    with c2: st.markdown('<div class="card-container"><span class="card-icon">🩸</span><div class="card-title">إدارة السكر</div></div>', unsafe_allow_html=True)
-    with c3: st.markdown('<div class="card-container"><span class="card-icon">🏃</span><div class="card-title">نمط حياة</div></div>', unsafe_allow_html=True)
-    with c4: st.markdown('<div class="card-container"><span class="card-icon">🎧</span><div class="card-title">دعم فوري</div></div>', unsafe_allow_html=True)
+    with c1: 
+        st.markdown('<div class="card-container"><span class="card-icon">🥗</span><div class="card-title">إرشادات غذائية</div></div>', unsafe_allow_html=True)
+    with c2: 
+        st.markdown('<div class="card-container"><span class="card-icon">🩸</span><div class="card-title">إدارة السكر</div></div>', unsafe_allow_html=True)
+    with c3: 
+        st.markdown('<div class="card-container"><span class="card-icon">🏃</span><div class="card-title">نمط حياة</div></div>', unsafe_allow_html=True)
+    with c4: 
+        st.markdown('<div class="card-container"><span class="card-icon">🎧</span><div class="card-title">دعم فوري</div></div>', unsafe_allow_html=True)
 
     st.write("<br>", unsafe_allow_html=True)
 
     # قسم الإرشادات الطبية (البطاقة الخضراء)
+    st.markdown('<div id="tips" class="tips-wrapper">', unsafe_allow_html=True)
     st.markdown('<h2 style="color:#1b4332; margin-bottom:30px; text-align:center;">إرشادات طبية لصيام آمن 🍏</h2>', unsafe_allow_html=True)
     st.markdown("""
         <div class="tips-layout">
@@ -304,8 +333,9 @@ if st.session_state.page == 'home':
         if st.button("ابدأ المحادثة الآن 💬", type="primary", key="bottom_start_btn"):
             st.session_state.page = 'chat'
             st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    # الفوتر الكامل (تم إصلاح ظهور نصوصه)
+    # الفوتر الكامل
     st.markdown("""
         <div class="custom-footer">
             <div class="footer-col">
@@ -328,6 +358,7 @@ if st.session_state.page == 'home':
 
 # --- 2. صفحة الشات (النسخة الكاملة) ---
 elif st.session_state.page == 'chat':
+    st.markdown('<div class="sticky-header">', unsafe_allow_html=True)
     ch1, ch2 = st.columns([1, 5])
     with ch1:
         if st.button("⬅️ عودة", type="primary"):
@@ -335,6 +366,7 @@ elif st.session_state.page == 'chat':
             st.rerun()
     with ch2:
         st.markdown('<h2 style="color:#1b4332; margin:0; text-align:right;"> ريبوت دردشة لدعم مرضى السكري خلال رمضان </h2>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
     for m in st.session_state.messages:
         with st.chat_message(m["role"]):
@@ -348,7 +380,7 @@ elif st.session_state.page == 'chat':
         try:
             client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
             system_rules = """أنتِ مساعدة طبية ذكية متخصصة حصرياً في مرض السكري خلال شهر رمضان.
-1. يجب عليكِ الرد دائماً بنفس اللغة التي يستخدمها المستخدم.
+1. يجب عليكِ الرد دائماً بنفس اللغة التي يستخدمها المستخدم (إذا تحدث بالعربية ردي بالعربية، وإذا تحدث بالإنجليزية ردي بالإنجليزية).
 2. إذا قام المستخدم بالترحيب، رحبي بهِ بحفاوة وبنفس لغته.
 3. لا تجيبي على أي سؤال لا يتعلق بالسكري في رمضان بتاتاً.
 4. إذا سُئلتِ عن شيء خارج التخصص، اعتذري بلباقة وبنفس لغة المستخدم."""
