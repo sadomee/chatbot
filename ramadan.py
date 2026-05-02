@@ -10,10 +10,9 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
     
     /* ضبط الخطوط والاتجاهات */
-   * { 
+  * { 
     font-family: 'Cairo', sans-serif !important; 
-    /* نستخدم unicode-bidi و direction: ltr مع خاصية التحديد التلقائي */
-    unicode-bidi: plaintext;
+    direction: rtl; 
     text-align: right; 
 }
     
@@ -224,10 +223,22 @@ st.markdown("""
         font-weight: bold !important;
         font-size: 1.1rem !important;
     }
-            div[aria-label="Chat message from user"] .stMarkdown,
+/* تنسيق النصوص داخل فقاعات الدردشة لتدعم اللغتين */
+div[aria-label="Chat message from user"] .stMarkdown,
 div[aria-label="Chat message from assistant"] .stMarkdown {
-    direction: auto !important;
+    /* هذه الخاصية تجعل الاتجاه يعتمد على لغة النص المكتوب */
+    unicode-bidi: plaintext !important; 
     text-align: start !important;
+    direction: ltr !important; 
+}
+
+/* التأكد من أن الفقاعة نفسها في مكانها الصحيح (يمنة للمستخدم ويسرة للبوت) */
+div[aria-label="Chat message from user"] {
+    justify-content: flex-end !important;
+}
+
+div[aria-label="Chat message from assistant"] {
+    justify-content: flex-start !important;
 }
     </style>
 """, unsafe_allow_html=True)
