@@ -10,11 +10,12 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
     
     /* ضبط الخطوط والاتجاهات */
-    * { 
-        font-family: 'Cairo', sans-serif !important; 
-        direction: rtl; 
-        text-align: right; 
-    }
+   * { 
+    font-family: 'Cairo', sans-serif !important; 
+    /* نستخدم unicode-bidi و direction: ltr مع خاصية التحديد التلقائي */
+    unicode-bidi: plaintext;
+    text-align: right; 
+}
     
     /* إخفاء عناصر ستريم ليت الافتراضية */
     header, footer, .stDeployButton { 
@@ -223,6 +224,11 @@ st.markdown("""
         font-weight: bold !important;
         font-size: 1.1rem !important;
     }
+            div[aria-label="Chat message from user"] .stMarkdown,
+div[aria-label="Chat message from assistant"] .stMarkdown {
+    direction: auto !important;
+    text-align: start !important;
+}
     </style>
 """, unsafe_allow_html=True)
 
