@@ -159,53 +159,8 @@ st.markdown("""
         font-size: 1rem; 
     }
 
-    /* --- واجهة الشات المطورة --- */
-    .sticky-header {
-        position: sticky; 
-        top: 0; 
-        background: white; 
-        z-index: 1000;
-        padding: 20px 0; 
-        border-bottom: 1px solid #eee; 
-        margin-bottom: 20px;
-    }
+    python -m streamlit run ramadan.py
     
-    [data-testid="stChatMessageAvatarUser"], [data-testid="stChatMessageAvatarAssistant"] { 
-        display: none !important; 
-    }
-    
-    [data-testid="stChatMessage"] { 
-        background-color: transparent !important; 
-        width: 100% !important; 
-    }
-
-    div[aria-label="Chat message from user"] { 
-        flex-direction: row-reverse !important; 
-    }
-    div[aria-label="Chat message from user"] .stMarkdown {
-        background-color: #1b4332 !important; 
-        color: white !important;
-        border-radius: 20px 20px 2px 20px !important; 
-        padding: 12px 20px !important;
-        width: fit-content !important; 
-        max-width: 80% !important; 
-        margin-right: 15px;
-    }
-
-    div[aria-label="Chat message from assistant"] { 
-        flex-direction: row !important; 
-    }
-    div[aria-label="Chat message from assistant"] .stMarkdown {
-        background-color: #f0f2f6 !important; 
-        color: #1f2937 !important;
-        border-radius: 20px 20px 20px 2px !important; 
-        padding: 12px 20px !important;
-        width: fit-content !important; 
-        max-width: 80% !important; 
-        margin-left: 15px;
-        border: 1px solid #e5e7eb !important;
-    }
-
     /* --- تلوين الأزرار حسب النوع (الحل النهائي) --- */
     div.stButton > button[kind="primary"] {
         background-color: #1b4332 !important; 
