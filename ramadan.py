@@ -159,8 +159,51 @@ st.markdown("""
         font-size: 1rem; 
     }
 
-    python -m streamlit run ramadan.py
+    /* --- واجهة الشات المطورة لضبط الاتجاهات --- */
     
+    /* إخفاء الأفاتار لزيادة المساحة */
+    [data-testid="stChatMessageAvatarUser"], [data-testid="stChatMessageAvatarAssistant"] { 
+        display: none !important; 
+    }
+    
+    /* جعل حاوية الرسالة تأخذ العرض الكامل */
+    [data-testid="stChatMessage"] { 
+        background-color: transparent !important; 
+        width: 100% !important; 
+    }
+
+    /* رسالة المستخدم: تظهر في جهة اليمين */
+    div[aria-label="Chat message from user"] { 
+        flex-direction: row-reverse !important; 
+        display: flex !important;
+    }
+    div[aria-label="Chat message from user"] .stMarkdown {
+        background-color: #1b4332 !important; 
+        color: white !important;
+        border-radius: 20px 20px 2px 20px !important; 
+        padding: 12px 20px !important;
+        width: fit-content !important; 
+        max-width: 75% !important; 
+        margin-right: 15px;
+        margin-left: auto; /* يدفع الرسالة لليمين */
+    }
+
+    /* رسالة البوت (المساعد): تظهر في جهة اليسار */
+    div[aria-label="Chat message from assistant"] { 
+        flex-direction: row !important; 
+        display: flex !important;
+    }
+    div[aria-label="Chat message from assistant"] .stMarkdown {
+        background-color: #f0f2f6 !important; 
+        color: #1f2937 !important;
+        border-radius: 20px 20px 20px 2px !important; 
+        padding: 12px 20px !important;
+        width: fit-content !important; 
+        max-width: 75% !important; 
+        margin-left: 15px;
+        margin-right: auto; /* يدفع الرسالة لليسار */
+        border: 1px solid #e5e7eb !important;
+    }
     /* --- تلوين الأزرار حسب النوع (الحل النهائي) --- */
     div.stButton > button[kind="primary"] {
         background-color: #1b4332 !important; 
@@ -320,10 +363,10 @@ elif st.session_state.page == 'chat':
         try:
             client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
             system_rules = """أنتِ مساعدة طبية ذكية متخصصة حصرياً في مرض السكري خلال شهر رمضان.
-1. يجب عليكِ الرد دائماً بنفس اللغة التي يستخدمها المستخدم (إذا تحدث بالعربية ردي بالعربية، وإذا تحدث بالإنجليزية ردي بالإنجليزية).
-2. إذا قام المستخدم بالترحيب، رحبي بهِ بحفاوة وبنفس لغته.
-3. لا تجيبي على أي سؤال لا يتعلق بالسكري في رمضان بتاتاً.
-4. إذا سُئلتِ عن شيء خارج التخصص، اعتذري بلباقة وبنفس لغة المستخدم."""
+            1. إذا قام المستخدم بالترحيب، يجب أن ترحبي بهِ بعبارة 'مرحباً بكِ في مساعد السكري الرمضاني، كيف يمكنني مساعدتكِ اليوم؟'.
+            2. لا تجيبي على أي سؤال لا يتعلق بالسكري في رمضان بتاتاً.
+            3. إذا سُئلتِ عن شيء خارج التخصص، قولي بلباقة: 'عذراً، أنا متخصصة فقط في تقديم الإرشادات الطبية المتعلقة بمرض السكري في رمضان لضمان سلامتكم'."""
+            
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "system", "content": system_rules}] + st.session_state.messages
