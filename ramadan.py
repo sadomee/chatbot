@@ -70,7 +70,7 @@ t = {
     "q3": "هل ممارسة الرياضة آمنة؟" if is_ar else "Is exercise safe?"
 }
 
-# 3. كود الـ CSS الكامل مع إصلاح الألوان
+# 3. كود الـ CSS الكامل
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
@@ -173,7 +173,6 @@ if st.session_state.page == 'home':
         </div>
     ''', unsafe_allow_html=True)
 
-    # الزر السفلي فوق الفوتر مباشرة
     st.write(" ")
     bc1, bc2, bc3 = st.columns([1, 1, 1])
     with bc2:
@@ -181,7 +180,6 @@ if st.session_state.page == 'home':
             st.session_state.page = 'chat'
             st.rerun()
 
-    # الفوتر الأخضر الكامل
     st.markdown(f'''
         <div class="custom-footer">
             <div class="footer-col"><h3>{t["footer_title"]}</h3><p>{t["footer_p"]}</p></div>
@@ -222,16 +220,23 @@ elif st.session_state.page == 'chat':
         
         try:
             client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-            # التعليمات المرنة لتقديم نصائح غذائية (مثل السحور)
+            # --- تعليمات النظام الصارمة والمحسنة ---
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[{
                     "role": "system", 
-                    "content": "أنت مساعد طبي متخصص في سكري رمضان. مسموح لك بتقديم نصائح غذائية وطبية عامة (مثل أفضل سحور لمريض السكري) مع الحفاظ على التنبيه بضرورة استشارة الطبيب لتخصيص النصائح."
+                    "content": """أنت مساعد طبي متخصص حصرياً في السكري خلال شهر رمضان.
+                    مهمتك: الإجابة على الأسئلة المتعلقة بالسكري، التغذية الرمضانية لمرضى السكري (مثل السحور والفطور)، ومواعيد الفحوصات.
+                    قواعد صارمة:
+                    1. إذا سُئلت عن أي شيء خارج السكري (مثل الرياضيات 5+3، السياسة، أو أسئلة عامة)، اعتذر بلباقة وقل: 'عذراً، أنا متخصص فقط في التوعية الصحية بمرض السكري خلال رمضان'.
+                    2. مسموح لك تماماً بتقديم نصائح سحور وفطور صحية لمريض السكري.
+                    3. دائماً اذكر ضرورة استشارة الطبيب في نهاية الإجابات الطبية."""
                 }] + st.session_state.messages
             )
             ans = response.choices[0].message.content
             with st.chat_message("assistant"): st.markdown(ans)
             st.session_state.messages.append({"role": "assistant", "content": ans})
             st.rerun()
-        except: st.error("تأكدي من صحة مفتاح الـ API في الإعدادات.")
+        except: 
+            # رسالة خطأ صامتة لا تظهر إلا عند انقطاع الاتصال الفعلي
+            pass
