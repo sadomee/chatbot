@@ -9,7 +9,7 @@ if 'lang' not in st.session_state: st.session_state.lang = 'ar'
 if 'page' not in st.session_state: st.session_state.page = 'home'
 if "messages" not in st.session_state: st.session_state.messages = []
 
-# منطق تبديل اللغة
+# منطق تبديل اللغة عبر الرابط
 query_params = st.query_params
 if "change" in query_params:
     st.session_state.lang = query_params["change"]
@@ -18,10 +18,10 @@ if "change" in query_params:
 
 is_ar = st.session_state.lang == 'ar'
 
-# 2. القاموس الكامل (تعديل نص زر الطوارئ الإنجليزي ليكون مساوياً للعربي)
+# 2. القاموس الكامل للنصوص (بدون اختصار)
 t = {
-    "title": "ريبوت دردشة لدعم مرضى السكري خلال رمضان" if is_ar else "Ramadan Diabetes Chatbot for Patient Support",
-    "emergency_btn": "🚨 حالات الطوارئ / انخفاض أو ارتفاع السكر" if is_ar else "🚨 Emergency Cases / Blood Sugar Fluctuations",
+    "title": "ريبوت دردشة لدعم مرضى السكري خلال رمضان" if is_ar else "Ramadan Diabetes Chatbot Support",
+    "emergency_btn": "🚨 حالات الطوارئ / انخفاض أو ارتفاع السكر" if is_ar else "🚨 Emergency / Sugar Fluctuations",
     "emergency_msg": """
     **إجراءات الطوارئ السريعة:**
     * افحص سكر الدم فوراً.
@@ -70,13 +70,33 @@ t = {
     "q3": "هل ممارسة الرياضة آمنة؟" if is_ar else "Is exercise safe?"
 }
 
-# 3. كود الـ CSS الكامل
+# 3. كود الـ CSS الكامل مع إصلاح الألوان
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
     * {{ font-family: 'Cairo', sans-serif !important; direction: {"rtl" if is_ar else "ltr"}; text-align: {"right" if is_ar else "left"}; }}
     header, footer, .stDeployButton {{ visibility: hidden; }}
     .block-container {{ padding-top: 2rem !important; }}
+
+    /* الأزرار الأساسية باللون الأخضر */
+    div.stButton > button[kind="primary"] {{ 
+        background-color: #1b4332 !important; 
+        color: white !important; 
+        border-radius: 50px !important; 
+        padding: 12px 35px !important; 
+        border: none !important; 
+        font-weight: 600 !important;
+    }}
+    
+    /* زر الطوارئ باللون الأحمر حصراً */
+    div.stButton > button[kind="secondary"] {{ 
+        background-color: #d00000 !important; 
+        color: white !important; 
+        border-radius: 50px !important; 
+        padding: 12px 35px !important; 
+        border: none !important; 
+        font-weight: 600 !important;
+    }}
 
     .floating-lang-btn {{
         position: fixed !important; bottom: 30px !important;
@@ -105,9 +125,6 @@ st.markdown(f"""
     .custom-footer {{ background: #1b4332; color: white; padding: 60px 40px; border-radius: 40px 40px 0 0; display: flex; justify-content: space-between; margin-top: 60px; flex-wrap: wrap; gap: 30px; }}
     .footer-links a {{ color: white !important; text-decoration: none; display: block; margin-bottom: 12px; }}
 
-    div.stButton > button[kind="primary"] {{ background-color: #1b4332 !important; color: white !important; border-radius: 50px !important; padding: 12px 35px !important; border: none !important; }}
-    div.stButton > button[kind="secondary"] {{ background-color: #d00000 !important; color: white !important; border-radius: 50px !important; padding: 12px 35px !important; border: none !important; }}
-
     [data-testid="stChatMessageAvatarUser"], [data-testid="stChatMessageAvatarAssistant"] {{ display: none !important; }}
     div[aria-label="Chat message from user"] .stMarkdown {{ background-color: #1b4332 !important; color: white !important; border-radius: 20px 20px 2px 20px !important; padding: 12px 20px !important; width: fit-content !important; }}
     div[aria-label="Chat message from assistant"] .stMarkdown {{ background-color: #f0f2f6 !important; border-radius: 20px 20px 20px 2px !important; padding: 12px 20px !important; border: 1px solid #e5e7eb !important; width: fit-content !important; }}
@@ -118,7 +135,7 @@ st.markdown(f"""
 # --- الصفحة الرئيسية ---
 if st.session_state.page == 'home':
     st.markdown('<div id="top"></div>', unsafe_allow_html=True)
-    col_t, col_e = st.columns([3.5, 2.5]) # تعديل العرض ليستوعب النص الإنجليزي الطويل
+    col_t, col_e = st.columns([3.5, 2.5])
     with col_t: st.markdown(f'<h2 style="color:#1b4332;">{t["title"]}</h2>', unsafe_allow_html=True)
     with col_e: 
         if st.button(t["emergency_btn"], type="secondary"): st.error(t["emergency_msg"])
@@ -156,7 +173,7 @@ if st.session_state.page == 'home':
         </div>
     ''', unsafe_allow_html=True)
 
-    # الزر الثاني في الأسفل تماماً فوق الفوتر
+    # الزر السفلي فوق الفوتر مباشرة
     st.write(" ")
     bc1, bc2, bc3 = st.columns([1, 1, 1])
     with bc2:
@@ -164,6 +181,7 @@ if st.session_state.page == 'home':
             st.session_state.page = 'chat'
             st.rerun()
 
+    # الفوتر الأخضر الكامل
     st.markdown(f'''
         <div class="custom-footer">
             <div class="footer-col"><h3>{t["footer_title"]}</h3><p>{t["footer_p"]}</p></div>
@@ -204,15 +222,16 @@ elif st.session_state.page == 'chat':
         
         try:
             client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+            # التعليمات المرنة لتقديم نصائح غذائية (مثل السحور)
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[{
                     "role": "system", 
-                    "content": "أنت مساعد طبي متخصص حصرياً في السكري في رمضان. مسموح لك فقط بالترحيب، الشكر، والإجابة عن السكري. إذا سألك المستخدم عن أي موضوع خارج السكري (مثل الطبخ أو مواضيع عامة)، اعتذر بلباقة وقل أنك متخصص فقط في التوعية بمرض السكري في رمضان."
+                    "content": "أنت مساعد طبي متخصص في سكري رمضان. مسموح لك بتقديم نصائح غذائية وطبية عامة (مثل أفضل سحور لمريض السكري) مع الحفاظ على التنبيه بضرورة استشارة الطبيب لتخصيص النصائح."
                 }] + st.session_state.messages
             )
             ans = response.choices[0].message.content
             with st.chat_message("assistant"): st.markdown(ans)
             st.session_state.messages.append({"role": "assistant", "content": ans})
             st.rerun()
-        except: st.error("Technical Error.")
+        except: st.error("تأكدي من صحة مفتاح الـ API في الإعدادات.")
