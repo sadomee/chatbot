@@ -65,7 +65,7 @@ t = {
     "q3": "هل ممارسة الرياضة آمنة؟" if is_ar else "Is exercise safe?"
 }
 
-# 3. كود الـ CSS الكامل (المستعاد بالكامل بدون أي اختصار)
+# 3. كود الـ CSS الكامل
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
@@ -118,17 +118,12 @@ if st.session_state.page == 'home':
     with col_e: 
         if st.button(t["emergency_btn"], type="secondary"): st.error(t["emergency_msg"])
     st.warning(t["disclaimer"])
-    
-    st.markdown(f'<div class="hero-flex"><div class="hero-text-container"><h1>{t["hero_h1"]}</h1><p>{t["hero_p"]}</p></div></div>', unsafe_allow_html=True)
-    
-    c_btn = st.columns([1, 1, 1])
-    with c_btn[1]:
-        if st.button(t["start_btn"], type="primary"):
-            st.session_state.page = 'chat'
-            st.rerun()
+    st.markdown(f'<div class="hero-flex"><div><h1>{t["hero_h1"]}</h1><p>{t["hero_p"]}</p></div></div>', unsafe_allow_html=True)
+    if st.button(t["start_btn"], type="primary"):
+        st.session_state.page = 'chat'
+        st.rerun()
 
     st.markdown(f'<div id="about" class="about-box"><h3>{t["about_h3"]}</h3><p>{t["about_p"]}</p></div>', unsafe_allow_html=True)
-
     st.markdown(f'<h2 style="color:#1b4332; text-align:center; margin-bottom:30px;">{t["how_help"]}</h2>', unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
     with c1: st.markdown(f'<div class="card-container"><span class="card-icon">🥗</span><div class="card-title">{t["c1"]}</div></div>', unsafe_allow_html=True)
@@ -167,8 +162,6 @@ elif st.session_state.page == 'chat':
         st.rerun()
     
     st.markdown(f'<h2 style="color:#1b4332;">{t["title"]}</h2>', unsafe_allow_html=True)
-    
-    # أزرار الدكتور (أخضر)
     st.markdown(f"<h5>{t['sample_title']}</h5>", unsafe_allow_html=True)
     sq1, sq2, sq3 = st.columns(3)
     clicked_q = None
@@ -186,9 +179,11 @@ elif st.session_state.page == 'chat':
     if clicked_q: prompt = clicked_q
 
     if prompt:
+        # عرض رسالة المستخدم فوراً
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"): st.markdown(prompt)
         
+        # معالجة الرد
         try:
             client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
             response = client.chat.completions.create(
@@ -196,8 +191,12 @@ elif st.session_state.page == 'chat':
                 messages=[{"role": "system", "content": "You are a helpful medical assistant."}] + st.session_state.messages
             )
             ans = response.choices[0].message.content
+            
+            # عرض رد البوت وحفظه
+            with st.chat_message("assistant"): st.markdown(ans)
             st.session_state.messages.append({"role": "assistant", "content": ans})
+            
+            # تحديث الصفحة بشكل صحيح لضمان بقاء الرسالة
             st.rerun()
-        except:
-            if not any(m["role"] == "assistant" for m in st.session_state.messages[-1:]):
-                st.error("Technical Error: Please check API Key.")
+        except Exception as e:
+            st.error("Technical Error. Please check API Key.")
