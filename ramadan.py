@@ -18,40 +18,45 @@ if "change" in query_params:
 
 is_ar = st.session_state.lang == 'ar'
 
-# 2. القاموس الكامل (يحتوي على كافة النصوص الأصلية وأسئلة الدكتور)
+# 2. القاموس الكامل (تعديل نص زر الطوارئ الإنجليزي ليكون مساوياً للعربي)
 t = {
-    "title": "ريبوت دردشة لدعم مرضى السكري خلال رمضان" if is_ar else "Ramadan Diabetes Chatbot",
-    "emergency_btn": "🚨 حالات الطوارئ / انخفاض أو ارتفاع السكر" if is_ar else "🚨 Emergency / Blood Sugar Fluctuations",
+    "title": "ريبوت دردشة لدعم مرضى السكري خلال رمضان" if is_ar else "Ramadan Diabetes Chatbot for Patient Support",
+    "emergency_btn": "🚨 حالات الطوارئ / انخفاض أو ارتفاع السكر" if is_ar else "🚨 Emergency Cases / Blood Sugar Fluctuations",
     "emergency_msg": """
     **إجراءات الطوارئ السريعة:**
     * افحص سكر الدم فوراً.
     * اقطع الصيام فوراً إذا كان السكر أقل من 70 أو أكثر من 300 مجم/ديسيلتر.
     * اطلب الرعاية الطبية العاجلة فوراً إذا لم تستقر الحالة أو ساءت الأعراض.
-    """ if is_ar else "Quick Emergency Procedures: Check blood sugar, break fast if <70 or >300 mg/dL.",
-    "disclaimer": "⚠️ **إخلاء مسؤولية:** هذا التطبيق للأغراض التعليمية فقط وليس نصيحة طبية بديلة." if is_ar else "⚠️ Disclaimer: Educational purposes only.",
+    """ if is_ar else """
+    **Quick Emergency Procedures:**
+    * Check blood sugar immediately.
+    * Break your fast immediately if sugar is <70 or >300 mg/dL.
+    * Seek urgent medical care if the condition does not stabilize.
+    """,
+    "disclaimer": "⚠️ **إخلاء مسؤولية:** هذا التطبيق للأغراض التعليمية فقط وليس نصيحة طبية بديلة." if is_ar else "⚠️ Disclaimer: Educational purposes only and not a substitute for medical advice.",
     "hero_h1": "مرحباً بكِ 🌙" if is_ar else "Welcome 🌙",
-    "hero_p": "أنا مساعدكِ الطبي المتخصص في التوعية بمرض السكري خلال شهر رمضان المبارك." if is_ar else "I am your medical assistant for diabetes awareness during Ramadan.",
+    "hero_p": "أنا مساعدكِ الطبي المتخصص في التوعية بمرض السكري خلال شهر رمضان المبارك." if is_ar else "I am your medical assistant for diabetes awareness during the holy month of Ramadan.",
     "start_btn": "ابدأ المحادثة الآن 💬" if is_ar else "Start Chatting Now 💬",
     "about_h3": "حول السكري في رمضان 🩸" if is_ar else "About Diabetes in Ramadan 🩸",
-    "about_p": "إدارة السكري خلال الصيام تتطلب وعياً طبياً دقيقاً؛ حيث تختلف احتياجات الجسم للطاقة والعلاج بين ساعات الصيام والإفطار. يهدف هذا المساعد لتزويدك بإرشادات فورية حول كيفية التعامل مع تقلبات السكر." if is_ar else "Managing diabetes during fasting requires precise medical awareness.",
+    "about_p": "إدارة السكري خلال الصيام تتطلب وعياً طبياً دقيقاً؛ حيث تختلف احتياجات الجسم للطاقة والعلاج بين ساعات الصيام والإفطار. يهدف هذا المساعد لتزويدك بإرشادات فورية حول كيفية التعامل مع تقلبات السكر." if is_ar else "Managing diabetes during fasting requires precise medical awareness. This assistant aims to provide you with immediate guidance on handling sugar fluctuations.",
     "how_help": "كيف أساعدكِ؟" if is_ar else "How can I help you?",
-    "c1": "إرشادات غذائية" if is_ar else "Nutrition",
-    "c2": "إدارة السكر" if is_ar else "Sugar Mgmt",
-    "c3": "نمط حياة" if is_ar else "Lifestyle",
+    "c1": "إرشادات غذائية" if is_ar else "Nutrition Guides",
+    "c2": "إدارة السكر" if is_ar else "Sugar Management",
+    "c3": "نمط حياة" if is_ar else "Lifestyle Tips",
     "c4": "دعم فوري" if is_ar else "Instant Support",
     "tips_h2": "إرشادات طبية لصيام آمن 🍏" if is_ar else "Medical Guidelines for Safe Fasting 🍏",
-    "tips_side_h2": "صيامكِ بوعيكِ أمانكِ" if is_ar else "Your Awareness, Your Safety",
-    "tips_side_p": "اتبعي النصائح الطبية واستمتعي برمضان بصحة ونشاط دائم." if is_ar else "Follow medical advice for your safety.",
+    "tips_side_h2": "صيامكِ بوعيكِ أمانكِ" if is_ar else "Awareness is Your Safety",
+    "tips_side_p": "اتبعي النصائح الطبية واستمتعي برمضان بصحة ونشاط دائم." if is_ar else "Follow medical tips and enjoy Ramadan with permanent health and activity.",
     "t1_h": "التعديل الدوائي:" if is_ar else "Medication Adjustment:",
-    "t1_p": "لا تبدئي الصيام دون استشارة طبيبك لتعديل جرعات الأنسولين أو الأدوية." if is_ar else "Consult your doctor for medication.",
+    "t1_p": "لا تبدئي الصيام دون استشارة طبيبك لتعديل جرعات الأنسولين أو الأدوية." if is_ar else "Do not start fasting without consulting your doctor to adjust doses.",
     "t2_h": "توازن الوجبات:" if is_ar else "Balanced Meals:",
-    "t2_p": "ابدئي إفطارك بالتمر والماء، واجعلي وجبة السحور غنية بالألياف والبروتين." if is_ar else "Balance your Iftar and Suhoor.",
+    "t2_p": "ابدئي إفطارك بالتمر والماء، واجعلي وجبة السحور غنية بالألياف والبروتين." if is_ar else "Start Iftar with dates and water, and make Suhoor rich in fiber and protein.",
     "t3_h": "الحماية من الجفاف:" if is_ar else "Dehydration Protection:",
-    "t3_p": "اشربي لترين من الماء على الأقل في الفترة ما بين الإفطار والسحور." if is_ar else "Drink plenty of water.",
+    "t3_p": "اشربي لترين من الماء على الأقل في الفترة ما بين الإفطار والسحور." if is_ar else "Drink at least two liters of water between Iftar and Suhoor.",
     "t4_h": "الفحص الدوري:" if is_ar else "Regular Testing:",
-    "t4_p": "قومي بقياس مستوى السكر في الدم 4 مرات يومياً على الأقل خلال الصيام." if is_ar else "Monitor blood sugar levels.",
+    "t4_p": "قومي بقياس مستوى السكر في الدم 4 مرات يومياً على الأقل خلال الصيام." if is_ar else "Measure blood sugar levels at least 4 times daily during fasting.",
     "footer_title": "رمضان بصحة" if is_ar else "Healthy Ramadan",
-    "footer_p": "مساعدكِ الطبي الذكي المتخصص في رفع الوعي الصحي لمرضى السكري خلال الشهر الفضيل." if is_ar else "Your smart medical assistant.",
+    "footer_p": "مساعدكِ الطبي الذكي المتخصص في رفع الوعي الصحي لمرضى السكري خلال الشهر الفضيل." if is_ar else "Your smart medical assistant specializing in diabetes health awareness.",
     "footer_quick": "روابط سريعة" if is_ar else "Quick Links",
     "footer_home": "الرئيسية 🏠" if is_ar else "Home 🏠",
     "footer_about": "حول السكري 🩸" if is_ar else "About Diabetes 🩸",
@@ -83,8 +88,8 @@ st.markdown(f"""
     }}
 
     .hero-flex {{ display: flex; justify-content: space-between; align-items: center; background: #f8faf9; padding: 50px; border-radius: 30px; margin-bottom: 30px; }}
-    .hero-text-container h1 {{ color: #1b4332; font-size: 3.5rem; }}
-    .hero-text-container p {{ color: #2d6a4f; font-size: 1.3rem; }}
+    .hero-text-container h1 {{ color: #1b4332; font-size: 3.5rem; margin: 0; }}
+    .hero-text-container p {{ color: #2d6a4f; font-size: 1.3rem; margin-top: 10px; }}
     
     .about-box {{ background: white; padding: 35px; border-radius: 25px; border: 1px solid #e5e7eb; margin-bottom: 40px; }}
     .card-container {{ background: white; padding: 25px; border-radius: 25px; border: 1px solid #eee; text-align: center; margin-bottom: 20px; transition: 0.3s; }}
@@ -104,7 +109,7 @@ st.markdown(f"""
     div.stButton > button[kind="secondary"] {{ background-color: #d00000 !important; color: white !important; border-radius: 50px !important; padding: 12px 35px !important; border: none !important; }}
 
     [data-testid="stChatMessageAvatarUser"], [data-testid="stChatMessageAvatarAssistant"] {{ display: none !important; }}
-    div[aria-label="Chat message from user"] .stMarkdown {{ background-color: #1b4332 !important; color: white !important; border-radius: 20px 20px 2px 20px !important; padding: 12px 20px !important; margin-left: {"auto" if is_ar else "0"}; margin-right: {"0" if is_ar else "auto"}; width: fit-content !important; }}
+    div[aria-label="Chat message from user"] .stMarkdown {{ background-color: #1b4332 !important; color: white !important; border-radius: 20px 20px 2px 20px !important; padding: 12px 20px !important; width: fit-content !important; }}
     div[aria-label="Chat message from assistant"] .stMarkdown {{ background-color: #f0f2f6 !important; border-radius: 20px 20px 20px 2px !important; padding: 12px 20px !important; border: 1px solid #e5e7eb !important; width: fit-content !important; }}
     </style>
     <a href="?change={"en" if is_ar else "ar"}" target="_self" class="floating-lang-btn">{"English" if is_ar else "العربية"}</a>
@@ -113,17 +118,24 @@ st.markdown(f"""
 # --- الصفحة الرئيسية ---
 if st.session_state.page == 'home':
     st.markdown('<div id="top"></div>', unsafe_allow_html=True)
-    col_t, col_e = st.columns([4, 2])
+    col_t, col_e = st.columns([3.5, 2.5]) # تعديل العرض ليستوعب النص الإنجليزي الطويل
     with col_t: st.markdown(f'<h2 style="color:#1b4332;">{t["title"]}</h2>', unsafe_allow_html=True)
     with col_e: 
         if st.button(t["emergency_btn"], type="secondary"): st.error(t["emergency_msg"])
     st.warning(t["disclaimer"])
-    st.markdown(f'<div class="hero-flex"><div><h1>{t["hero_h1"]}</h1><p>{t["hero_p"]}</p></div></div>', unsafe_allow_html=True)
-    if st.button(t["start_btn"], type="primary"):
-        st.session_state.page = 'chat'
-        st.rerun()
+    
+    h_col1, h_col2 = st.columns([3, 1.2])
+    with h_col1:
+        st.markdown(f'<div><h1 style="color:#1b4332; font-size:3.5rem; margin:0;">{t["hero_h1"]}</h1><p style="color:#2d6a4f; font-size:1.3rem; margin-top:10px;">{t["hero_p"]}</p></div>', unsafe_allow_html=True)
+    with h_col2:
+        st.write(" ")
+        st.write(" ")
+        if st.button(t["start_btn"], type="primary", key="hero_start"):
+            st.session_state.page = 'chat'
+            st.rerun()
 
     st.markdown(f'<div id="about" class="about-box"><h3>{t["about_h3"]}</h3><p>{t["about_p"]}</p></div>', unsafe_allow_html=True)
+
     st.markdown(f'<h2 style="color:#1b4332; text-align:center; margin-bottom:30px;">{t["how_help"]}</h2>', unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
     with c1: st.markdown(f'<div class="card-container"><span class="card-icon">🥗</span><div class="card-title">{t["c1"]}</div></div>', unsafe_allow_html=True)
@@ -143,6 +155,14 @@ if st.session_state.page == 'home':
             </div>
         </div>
     ''', unsafe_allow_html=True)
+
+    # الزر الثاني في الأسفل تماماً فوق الفوتر
+    st.write(" ")
+    bc1, bc2, bc3 = st.columns([1, 1, 1])
+    with bc2:
+        if st.button(t["start_btn"], type="primary", key="bottom_start"):
+            st.session_state.page = 'chat'
+            st.rerun()
 
     st.markdown(f'''
         <div class="custom-footer">
@@ -179,24 +199,20 @@ elif st.session_state.page == 'chat':
     if clicked_q: prompt = clicked_q
 
     if prompt:
-        # عرض رسالة المستخدم فوراً
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"): st.markdown(prompt)
         
-        # معالجة الرد
         try:
             client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
-                messages=[{"role": "system", "content": "You are a helpful medical assistant."}] + st.session_state.messages
+                messages=[{
+                    "role": "system", 
+                    "content": "أنت مساعد طبي متخصص حصرياً في السكري في رمضان. مسموح لك فقط بالترحيب، الشكر، والإجابة عن السكري. إذا سألك المستخدم عن أي موضوع خارج السكري (مثل الطبخ أو مواضيع عامة)، اعتذر بلباقة وقل أنك متخصص فقط في التوعية بمرض السكري في رمضان."
+                }] + st.session_state.messages
             )
             ans = response.choices[0].message.content
-            
-            # عرض رد البوت وحفظه
             with st.chat_message("assistant"): st.markdown(ans)
             st.session_state.messages.append({"role": "assistant", "content": ans})
-            
-            # تحديث الصفحة بشكل صحيح لضمان بقاء الرسالة
             st.rerun()
-        except Exception as e:
-            st.error("Technical Error. Please check API Key.")
+        except: st.error("Technical Error.")
