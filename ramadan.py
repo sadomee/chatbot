@@ -4,12 +4,12 @@ from openai import OpenAI
 # 1. إعدادات الصفحة الأساسية
 st.set_page_config(page_title="السكري في رمضان | Diabetes in Ramadan", page_icon="🌙", layout="wide")
 
-# إدارة الحالة (اللغة والصفحات)
+# إدارة الحالة
 if 'lang' not in st.session_state: st.session_state.lang = 'ar'
 if 'page' not in st.session_state: st.session_state.page = 'home'
 if "messages" not in st.session_state: st.session_state.messages = []
 
-# منطق تبديل اللغة عبر الرابط
+# منطق تبديل اللغة
 query_params = st.query_params
 if "change" in query_params:
     st.session_state.lang = query_params["change"]
@@ -18,7 +18,7 @@ if "change" in query_params:
 
 is_ar = st.session_state.lang == 'ar'
 
-# 2. القاموس الكامل للنصوص (بدون اختصار)
+# 2. القاموس الكامل للنصوص
 t = {
     "title": "ريبوت دردشة لدعم مرضى السكري خلال رمضان" if is_ar else "Ramadan Diabetes Chatbot Support",
     "emergency_btn": "🚨 حالات الطوارئ / انخفاض أو ارتفاع السكر" if is_ar else "🚨 Emergency / Sugar Fluctuations",
@@ -70,32 +70,24 @@ t = {
     "q3": "هل ممارسة الرياضة آمنة؟" if is_ar else "Is exercise safe?"
 }
 
-# 3. كود الـ CSS الكامل
+# 3. الـ CSS الكامل والأصلي مع إصلاح "النص المختفي" فقط
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
     * {{ font-family: 'Cairo', sans-serif !important; direction: {"rtl" if is_ar else "ltr"}; text-align: {"right" if is_ar else "left"}; }}
     header, footer, .stDeployButton {{ visibility: hidden; }}
-    .block-container {{ padding-top: 2rem !important; }}
-
-    /* الأزرار الأساسية باللون الأخضر */
-    div.stButton > button[kind="primary"] {{ 
-        background-color: #1b4332 !important; 
-        color: white !important; 
-        border-radius: 50px !important; 
-        padding: 12px 35px !important; 
-        border: none !important; 
-        font-weight: 600 !important;
-    }}
     
-    /* زر الطوارئ باللون الأحمر حصراً */
+    /* إجبار لون النص ليكون ظاهراً دوماً */
+    .stMarkdown p, .stMarkdown b, .stMarkdown li, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {{
+        color: #1b4332 !important;
+    }}
+
+    /* الأزرار */
+    div.stButton > button[kind="primary"] {{ 
+        background-color: #1b4332 !important; color: white !important; border-radius: 50px !important; padding: 12px 35px !important; border: none !important; font-weight: 600 !important;
+    }}
     div.stButton > button[kind="secondary"] {{ 
-        background-color: #d00000 !important; 
-        color: white !important; 
-        border-radius: 50px !important; 
-        padding: 12px 35px !important; 
-        border: none !important; 
-        font-weight: 600 !important;
+        background-color: #d00000 !important; color: white !important; border-radius: 50px !important; padding: 12px 35px !important; border: none !important; font-weight: 600 !important;
     }}
 
     .floating-lang-btn {{
@@ -107,26 +99,32 @@ st.markdown(f"""
         border: 2px solid white !important; box-shadow: 0px 4px 15px rgba(0,0,0,0.3); font-weight: bold !important;
     }}
 
+    /* الهوية البصرية الأصلية */
     .hero-flex {{ display: flex; justify-content: space-between; align-items: center; background: #f8faf9; padding: 50px; border-radius: 30px; margin-bottom: 30px; }}
-    .hero-text-container h1 {{ color: #1b4332; font-size: 3.5rem; margin: 0; }}
-    .hero-text-container p {{ color: #2d6a4f; font-size: 1.3rem; margin-top: 10px; }}
+    .hero-text-container h1 {{ color: #1b4332 !important; font-size: 3.5rem; margin: 0; }}
+    .hero-text-container p {{ color: #2d6a4f !important; font-size: 1.3rem; margin-top: 10px; }}
     
-    .about-box {{ background: white; padding: 35px; border-radius: 25px; border: 1px solid #e5e7eb; margin-bottom: 40px; }}
-    .card-container {{ background: white; padding: 25px; border-radius: 25px; border: 1px solid #eee; text-align: center; margin-bottom: 20px; transition: 0.3s; }}
+    .about-box {{ background: white; padding: 35px; border-radius: 25px; border: 1px solid #e5e7eb; margin-bottom: 40px; box-shadow: 0px 4px 10px rgba(0,0,0,0.05); }}
+    .card-container {{ background: white; padding: 25px; border-radius: 25px; border: 1px solid #eee; text-align: center; margin-bottom: 20px; transition: 0.3s; box-shadow: 0px 4px 10px rgba(0,0,0,0.05); }}
     .card-icon {{ font-size: 2.5rem; margin-bottom: 15px; display: block; }}
-    .card-title {{ color: #1b4332; font-weight: 700; }}
+    .card-title {{ color: #1b4332 !important; font-weight: 700; }}
 
     .tips-layout {{ display: flex; gap: 25px; margin-bottom: 30px; flex-wrap: wrap; }}
-    .green-side {{ background: #1b4332; color: white; padding: 40px; border-radius: 30px; flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: center; }}
-    .tips-list {{ flex: 2; background: white; border-radius: 25px; border: 1px solid #eee; overflow: hidden; min-width: 350px; }}
+    .green-side {{ background: #1b4332; color: white !important; padding: 40px; border-radius: 30px; flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: center; }}
+    .green-side h2, .green-side p {{ color: white !important; }}
+    
+    .tips-list {{ flex: 2; background: white; border-radius: 25px; border: 1px solid #eee; overflow: hidden; min-width: 350px; box-shadow: 0px 4px 10px rgba(0,0,0,0.05); }}
     .instruction-row {{ padding: 20px; border-bottom: 1px solid #f5f5f5; display: flex; align-items: center; }}
     .ins-icon {{ font-size: 1.5rem; {"margin-left: 15px;" if is_ar else "margin-right: 15px;"} background: #f0f7f4; padding: 10px; border-radius: 50%; }}
 
-    .custom-footer {{ background: #1b4332; color: white; padding: 60px 40px; border-radius: 40px 40px 0 0; display: flex; justify-content: space-between; margin-top: 60px; flex-wrap: wrap; gap: 30px; }}
+    .custom-footer {{ background: #1b4332; color: white !important; padding: 60px 40px; border-radius: 40px 40px 0 0; display: flex; justify-content: space-between; margin-top: 60px; flex-wrap: wrap; gap: 30px; }}
+    .custom-footer h3, .custom-footer h4, .custom-footer p {{ color: white !important; }}
     .footer-links a {{ color: white !important; text-decoration: none; display: block; margin-bottom: 12px; }}
 
+    /* الدردشة */
     [data-testid="stChatMessageAvatarUser"], [data-testid="stChatMessageAvatarAssistant"] {{ display: none !important; }}
     div[aria-label="Chat message from user"] .stMarkdown {{ background-color: #1b4332 !important; color: white !important; border-radius: 20px 20px 2px 20px !important; padding: 12px 20px !important; width: fit-content !important; }}
+    div[aria-label="Chat message from user"] p {{ color: white !important; }}
     div[aria-label="Chat message from assistant"] .stMarkdown {{ background-color: #f0f2f6 !important; border-radius: 20px 20px 20px 2px !important; padding: 12px 20px !important; border: 1px solid #e5e7eb !important; width: fit-content !important; }}
     </style>
     <a href="?change={"en" if is_ar else "ar"}" target="_self" class="floating-lang-btn">{"English" if is_ar else "العربية"}</a>
@@ -143,7 +141,12 @@ if st.session_state.page == 'home':
     
     h_col1, h_col2 = st.columns([3, 1.2])
     with h_col1:
-        st.markdown(f'<div><h1 style="color:#1b4332; font-size:3.5rem; margin:0;">{t["hero_h1"]}</h1><p style="color:#2d6a4f; font-size:1.3rem; margin-top:10px;">{t["hero_p"]}</p></div>', unsafe_allow_html=True)
+        st.markdown(f'''
+            <div class="hero-text-container">
+                <h1>{t["hero_h1"]}</h1>
+                <p>{t["hero_p"]}</p>
+            </div>
+        ''', unsafe_allow_html=True)
     with h_col2:
         st.write(" ")
         st.write(" ")
@@ -220,23 +223,15 @@ elif st.session_state.page == 'chat':
         
         try:
             client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-            # --- تعليمات النظام الصارمة والمحسنة ---
             response = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[{
                     "role": "system", 
-                    "content": """أنت مساعد طبي متخصص حصرياً في السكري خلال شهر رمضان.
-                    مهمتك: الإجابة على الأسئلة المتعلقة بالسكري، التغذية الرمضانية لمرضى السكري (مثل السحور والفطور)، ومواعيد الفحوصات.
-                    قواعد صارمة:
-                    1. إذا سُئلت عن أي شيء خارج السكري (مثل الرياضيات 5+3، السياسة، أو أسئلة عامة)، اعتذر بلباقة وقل: 'عذراً، أنا متخصص فقط في التوعية الصحية بمرض السكري خلال رمضان'.
-                    2. مسموح لك تماماً بتقديم نصائح سحور وفطور صحية لمريض السكري.
-                    3. دائماً اذكر ضرورة استشارة الطبيب في نهاية الإجابات الطبية."""
+                    "content": "أنت مساعد طبي متخصص في سكري رمضان. مسموح لك بتقديم نصائح غذائية وطبية عامة (مثل السحور) مع التنبيه لزيارة الطبيب. ارفض أي سؤال خارج تخصص السكري."
                 }] + st.session_state.messages
             )
             ans = response.choices[0].message.content
             with st.chat_message("assistant"): st.markdown(ans)
             st.session_state.messages.append({"role": "assistant", "content": ans})
             st.rerun()
-        except: 
-            # رسالة خطأ صامتة لا تظهر إلا عند انقطاع الاتصال الفعلي
-            pass
+        except: pass
